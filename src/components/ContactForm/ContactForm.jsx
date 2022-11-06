@@ -11,7 +11,7 @@ import { addContact } from 'redux/operations';
 const ContactForm = () => {
     
     const [name, setName] = useState('');
-    const [phone, setPhone] = useState('');
+    const [nubmer, setNubmer] = useState('');
 
     const handleInputChange = e => {
         const { name, value } = e.target;
@@ -21,7 +21,7 @@ const ContactForm = () => {
                 break;
         
             case "number":
-                setPhone(value)
+                setNubmer(value)
                 break;
             default:
                 return;
@@ -30,11 +30,11 @@ const ContactForm = () => {
     const dispatch = useDispatch();
     const contacts = useSelector(selectContacts);
 
-    const onSubmitContact = ({ name, phone }) => {
+    const onSubmitContact = ({ name, nubmer }) => {
   
         const newContact = {
             name,
-            phone,
+            nubmer,
         };
         const isContactExists = contacts.find(({ name }) => newContact.name.toLocaleLowerCase() === name.toLocaleLowerCase());
         console.log(newContact)
@@ -49,12 +49,12 @@ const ContactForm = () => {
     const onClickSubmit = (evt) => {
         evt.preventDefault();
         
-        onSubmitContact({ name, phone });
+        onSubmitContact({ name, nubmer });
     };
 
     const resetForm = () => {
         setName("");
-        setPhone("");
+        setNubmer("");
     };
   
     return (
@@ -84,7 +84,7 @@ const ContactForm = () => {
                         <Input
                             type="tel"
                             name="number"
-                            value={phone}
+                            value={nubmer}
                             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                             onChange={handleInputChange}
