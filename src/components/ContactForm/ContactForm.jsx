@@ -2,16 +2,16 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useState } from "react";
 import { Box } from 'components/Box';
 import { Input, AddButton } from './ContactForm.styled';
-// import { add } from "redux/contactsSlice/slice";
-import { useSelector, useDispatch } from "react-redux";
-import { selectContacts } from 'redux/selectors';
-import { addContact } from 'redux/operations';
+import { useGetContactsQuery, useCreateContactMutation } from 'redux/contacts/slice';
 
 
 const ContactForm = () => {
-    
+
+    const [createContact, { isLoading, isSuccess }] = useCreateContactMutation();
+        const { data: contacts, error, isFetching } = useGetContactsQuery();
+
     const [name, setName] = useState('');
-    const [nubmer, setNubmer] = useState('');
+    const [number, setNumber] = useState('');
 
     const handleInputChange = e => {
         const { name, value } = e.target;
@@ -21,40 +21,30 @@ const ContactForm = () => {
                 break;
         
             case "number":
-                setNubmer(value)
+                setNumber(value)
                 break;
             default:
                 return;
         }
     };
-    const dispatch = useDispatch();
-    const contacts = useSelector(selectContacts);
 
-    const onSubmitContact = ({ name, nubmer }) => {
-  
-        const newContact = {
-            name,
-            nubmer,
-        };
-        const isContactExists = contacts.find(({ name }) => newContact.name.toLocaleLowerCase() === name.toLocaleLowerCase());
-        console.log(newContact)
-        isContactExists
-            ? Notify.failure(`${newContact.name} is already in contacts`) :
-            dispatch(addContact(newContact));
-        if (!isContactExists) {
-            resetForm()
-        };
+    const onSubmitContact = ({ name, number }) => {
+        
+        contacts.some(contact => contact.name.toLocaleLowerCase() === name.toLocaleLowerCase())
+            ? Notify.failure(`${name} is already in contacts`) :
+            createContact({ name, number }) && resetForm();
+        
     };
 
     const onClickSubmit = (evt) => {
         evt.preventDefault();
         
-        onSubmitContact({ name, nubmer });
+        onSubmitContact({ name, number });
     };
 
     const resetForm = () => {
         setName("");
-        setNubmer("");
+        setNumber("");
     };
   
     return (
@@ -75,7 +65,7 @@ const ContactForm = () => {
                             value={name}
                             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
                             title="Name may contain only letters, apostrophe, dash and spaces.
-                    For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+                                For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                             required
                             onChange={handleInputChange}
                         />
@@ -84,7 +74,7 @@ const ContactForm = () => {
                         <Input
                             type="tel"
                             name="number"
-                            value={nubmer}
+                            value={number}
                             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                             onChange={handleInputChange}

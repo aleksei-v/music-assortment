@@ -1,30 +1,35 @@
 import { Box } from 'components/Box';
 import { Button } from '../ContactForm/ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { showCurrentContacts } from 'redux/selectors';
-import { deleteContact, fetchContacts } from 'redux/operations';
-import { useEffect } from 'react';
+// import { deleteContact, fetchContacts } from 'redux/operations';
+import { selectFilter } from 'redux/selectors';
 import { ContactOrder, ContactLi } from './ContactList.styled';
+import { useGetContactsQuery, useDeleteContactMutation } from 'redux/contacts/slice';
+import { showCurrentContacts } from 'components/utils/getFilteredContacts';
+import { useEffect } from 'react';
 
 const ContactList = () => {
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(fetchContacts())
-    }, [dispatch])
+    const filter = useSelector(selectFilter);
+    // const dispatch = useDispatch();
+    const { data, error, isLoading, refetch  } = useGetContactsQuery();
     
-    const currentContacts = useSelector(showCurrentContacts);
+    const [deleteContact] = useDeleteContactMutation();
+    
+    useEffect(() => {
+        refetch();
+    }, [refetch]);
+    
+const currentContacts = showCurrentContacts(filter, data);
 
     return (
         <Box pl={6} pr={6}>
             <ContactOrder>
-                {currentContacts.map((({ id, name, phone }) => {
+                {!isLoading && currentContacts.map((({ id, name, number }) => {
                     return (
                         <ContactLi key={id}>
-                            {name}: {phone}
+                            {name}: {number}
                             <Button onClick={() => {
-                                dispatch(deleteContact(id))
+                                deleteContact(id)
                             }}>
                                 Удалить
                             </Button>

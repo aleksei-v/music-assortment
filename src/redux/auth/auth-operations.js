@@ -11,7 +11,6 @@ const token = {
         axios.defaults.headers.common.Authorization = '';
     }
 }
-
 export const register = createAsyncThunk(
     "auth/register",
     async credentials => {
@@ -47,5 +46,25 @@ export const logOut = createAsyncThunk(
         } catch (error) {
             console.log(error)
         }
+    }
+);
+
+export const refreshCurrentUser = createAsyncThunk(
+    'auth/refresh',
+    async (_, thunkAPI) => {
+        const state = thunkAPI.getState();
+        const PersistedToken = state.auth.token;
+
+        if (PersistedToken === null) {
+            return thunkAPI.rejectWithValue();
+        }
+        try {
+            token.set(PersistedToken);
+            const { data } = await axios.get('/users/current');
+             
+            return data;
+        } catch (error) {
+            console.log(error)
+        }   
     }
 );
