@@ -11,7 +11,7 @@ export const Layout = () => {
 
     return(
     <Box>
-        <header>
+        <Box as='header' display="flex" alingItems="center" justifyContent='space-around'>
             <nav>
                 <NavLink to='home'>Home</NavLink>
                 <NavLink to='contacts'>Your contacts</NavLink>
@@ -20,7 +20,7 @@ export const Layout = () => {
                 ?   <UserMenu/>
                 :   <AuthNav/>
                 }
-        </header>
+        </Box>
         <Outlet/>
         </Box>
         

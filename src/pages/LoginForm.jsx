@@ -2,7 +2,9 @@ import { Box } from "components/Box"
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "redux/auth/auth-operations";
-
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 export const LoginForm = () => {
 
@@ -34,21 +36,20 @@ export const LoginForm = () => {
     }
   return (
         <Box>
-            <h1>Login</h1>
+            <Typography variant='h2' align='center'>Login</Typography>
 
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Your email     
-                 <input type="email" name="email" value={email} onChange={handleChange}/>   
-                </label>
-                <label>
-                    Your password   
-                    <input type="password" name="password" value={password} onChange={handleChange}/>
-                </label>
-                <button type="submit">Log in</button>
-
-            </form>
-
+            <Box
+                    as="form"
+                    onSubmit={handleSubmit}
+                    display="flex"
+                    flexDirection="column"
+                    p={4}
+                    alignItems="center"
+                >
+                <TextField margin="normal" label="Your email" variant="standard" type="email" name="email" value={email} onChange={handleChange} required/> 
+                <TextField  margin="normal" label="Your password" variant="standard" type="password" name="password" value={password} onChange={handleChange} required/>
+              <Button variant="contained" type="submit">Log in</Button>
+            </Box>
         </Box>
     )
 }

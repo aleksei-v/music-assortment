@@ -19,7 +19,7 @@ export const App = () => {
     dispatch(refreshCurrentUser())
   }, [dispatch]);
         
-  return (<Box p={5} color="black" bg="muted">
+  return (<Box p={5} color="black">
     <Routes>
       <Route path="/" element={<Layout/>}>
             <Route index element={<Navigate to='home'/>} />

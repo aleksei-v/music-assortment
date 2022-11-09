@@ -2,6 +2,9 @@ import { Box } from "components/Box"
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { register } from "redux/auth/auth-operations";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 export const RegisterForm = () => {
 
@@ -37,24 +40,29 @@ export const RegisterForm = () => {
     }
   return (
         <Box>
-            <h1>Regisration</h1>
+          <Typography variant='h2' align='center'>Regisration</Typography>
+          
+          <Box
+                    as="form"
+                    onSubmit={handleSubmit}
+                    display="flex"
+                    flexDirection="column"
+                    p={4}
+                    alignItems="center"
+                >
+              
+              <TextField id="margin-normal" margin="normal" label="Your name"
+                  variant="standard" type="name" name="name" value={name} onChange={handleChange} required/> 
+              
+              <TextField id="margin-normal" margin="normal" label="Your email" variant="standard"
+                  type="email" name="email" value={email} onChange={handleChange} required/> 
+              
+              <TextField id="margin-normal" margin="normal" label="Your password"
+                  variant="standard" type="password" name="password" value={password} onChange={handleChange} required/>
+              
+              <Button variant="contained" type="submit">Register</Button>
 
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Your name
-                    <input type="text" name="name" value={name} onChange={handleChange}/>
-                </label>
-                <label>
-                    Your email     
-                 <input type="email" name="email" value={email} onChange={handleChange}/>   
-                </label>
-                <label>
-                    Your password   
-                    <input type="password" name="password" value={password} onChange={handleChange}/>
-                </label>
-                <button type="submit">Register</button>
-
-            </form>
+            </Box>
 
         </Box>
     )
