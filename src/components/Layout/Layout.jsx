@@ -11,7 +11,12 @@ export const Layout = () => {
 
     return(
     <Box>
-        <Box as='header' display="flex" alingItems="center" justifyContent='space-around'>
+            <Box as='header'
+                display='flex'
+                alingItems="center"
+                justifyContent='space-around'
+                borderBottom = '1px solid blue'
+            >
             <nav>
                 <NavLink to='home'>Home</NavLink>
                 <NavLink to='contacts'>Your contacts</NavLink>

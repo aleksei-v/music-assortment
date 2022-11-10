@@ -1,15 +1,19 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useState } from "react";
 import { Box } from 'components/Box';
-import { Input, AddButton } from './ContactForm.styled';
+// import { Input, AddButton } from './ContactForm.styled';
 import { useGetContactsQuery, useCreateContactMutation } from 'redux/contacts/slice';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 const ContactForm = () => {
 
-    const [createContact, { isLoading, isSuccess }] = useCreateContactMutation();
-        const { data: contacts, error, isFetching } = useGetContactsQuery();
+    const [createContact,
+        // { isLoading, isSuccess }
+    ] = useCreateContactMutation();
+    const { data: contacts,
+        // error, isFetching
+    } = useGetContactsQuery();
 
     const [name, setName] = useState('');
     const [number, setNumber] = useState('');
@@ -67,7 +71,7 @@ const ContactForm = () => {
                     variant="standard"
                     type="name"
                     name="name"
-                    value={name} oonChange={handleInputChange}
+                    value={name} onChange={handleInputChange}
                     required /> 
               
                 <TextField id="margin-normal"

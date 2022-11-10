@@ -13,38 +13,50 @@ const token = {
 }
 export const register = createAsyncThunk(
     "auth/register",
-    async credentials => {
+    async (credentials, {rejectWithValue}) => {
         try {
             const {data} = await axios.post('/users/signup', credentials);
             token.set(data.token)
             return data;
-        } catch (error) {
-            console.log(error)
+        } catch ({response}) {
+            const error = {
+                status: response.status,
+                message: response.data.message,
+            }
+            return rejectWithValue(error)
         }
     }
 );
 
 export const login = createAsyncThunk(
     "auth/login",
-    async credentials => {
+    async (credentials, {rejectWithValue}) => {
         try {
             const { data } = await axios.post('/users/login', credentials);
             token.set(data.token);
             return data;
-        } catch (error) {
-            console.log(error)
+        } catch ({response}) {
+            const error = {
+                status: response.status,
+                message: response.data.message,
+            }
+            return rejectWithValue(error)
         }
     }
 );
 
 export const logOut = createAsyncThunk(
     "auth/logout",
-    async credentials => {
+    async (credentials, {rejectWithValue}) => {
         try {
             await axios.post('/users/logout', credentials);
             token.unset(); 
-        } catch (error) {
-            console.log(error)
+        } catch ({response}) {
+            const error = {
+                status: response.status,
+                message: response.data.message,
+            }
+            return rejectWithValue(error)
         }
     }
 );
@@ -63,8 +75,12 @@ export const refreshCurrentUser = createAsyncThunk(
             const { data } = await axios.get('/users/current');
              
             return data;
-        } catch (error) {
-            console.log(error)
+        } catch ({response}) {
+            const error = {
+                status: response.status,
+                message: response.data.message,
+            }
+            return thunkAPI.rejectWithValue(error)
         }   
     }
 );

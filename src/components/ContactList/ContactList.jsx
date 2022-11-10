@@ -1,6 +1,6 @@
 import { Box } from 'components/Box';
 import { Button } from '../ContactForm/ContactForm.styled';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 // import { deleteContact, fetchContacts } from 'redux/operations';
 import { selectFilter } from 'redux/selectors';
 import { ContactOrder, ContactLi } from './ContactList.styled';
@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 const ContactList = () => {
     const filter = useSelector(selectFilter);
     // const dispatch = useDispatch();
-    const { data, error, isLoading, refetch  } = useGetContactsQuery();
+    const { data, isLoading, refetch  } = useGetContactsQuery();
     
     const [deleteContact] = useDeleteContactMutation();
     

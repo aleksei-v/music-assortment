@@ -1,13 +1,16 @@
 import { Box } from "components/Box"
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { register } from "redux/auth/auth-operations";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { getIsLoggedIn } from "redux/auth/auth-selectors";
+import { Navigate } from "react-router-dom";
 
 export const RegisterForm = () => {
 
+    const isUserLogin = useSelector(getIsLoggedIn)
     const dispatch = useDispatch()
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -37,6 +40,10 @@ export const RegisterForm = () => {
         setName('');
         setEmail('');
         setPassword('');
+    }
+    if (isUserLogin) {
+        console.log("Вы вошли в аккаунт")
+        return(<Navigate to="/contacts"/>)
     }
   return (
         <Box>
