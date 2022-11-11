@@ -1,22 +1,23 @@
 import { Box } from "components/Box"
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { register } from "redux/auth/auth-operations";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { getIsLoggedIn } from "redux/auth/auth-selectors";
-import { Navigate } from "react-router-dom";
+import { useAuth } from "hooks/useAuth";
+import Loader from "../components/Loaders/AuthLoader"
 
 export const RegisterForm = () => {
 
-    const isUserLogin = useSelector(getIsLoggedIn)
+    const { isLoading, error } = useAuth();
+    
     const dispatch = useDispatch()
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleChange = ({target: { name, value }}) => {
+    const handleChange = ({ target: { name, value } }) => {
         // const { name, value } = e.target;
         switch (name) {
             case 'name':
@@ -32,7 +33,7 @@ export const RegisterForm = () => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        dispatch(register({name, email, password}))
+        dispatch(register({ name, email, password }))
         resetForm();
     }
 
@@ -41,14 +42,11 @@ export const RegisterForm = () => {
         setEmail('');
         setPassword('');
     }
-    if (isUserLogin) {
-        console.log("Вы вошли в аккаунт")
-        return(<Navigate to="/contacts"/>)
-    }
-  return (
-        <Box>
+    console.log(isLoading)
+    return (
+        <Box p={6}>
           <Typography variant='h2' align='center'>Regisration</Typography>
-          
+          {!error && isLoading && <Loader/>}
           <Box
                     as="form"
                     onSubmit={handleSubmit}
@@ -58,13 +56,13 @@ export const RegisterForm = () => {
                     alignItems="center"
                 >
               
-              <TextField id="margin-normal" margin="normal" label="Your name"
+              <TextField margin="normal" label="Your name"
                   variant="standard" type="name" name="name" value={name} onChange={handleChange} required/> 
               
-              <TextField id="margin-normal" margin="normal" label="Your email" variant="standard"
+              <TextField margin="normal" label="Your email" variant="standard"
                   type="email" name="email" value={email} onChange={handleChange} required/> 
               
-              <TextField id="margin-normal" margin="normal" label="Your password"
+              <TextField margin="normal" label="Your password"
                   variant="standard" type="password" name="password" value={password} onChange={handleChange} required/>
               
               <Button variant="contained" type="submit">Register</Button>

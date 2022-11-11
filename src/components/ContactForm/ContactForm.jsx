@@ -1,19 +1,16 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box } from 'components/Box';
 // import { Input, AddButton } from './ContactForm.styled';
 import { useGetContactsQuery, useCreateContactMutation } from 'redux/contacts/slice';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import ContactLoader from '../Loaders/ContactLoader'
 
 const ContactForm = () => {
 
-    const [createContact,
-        // { isLoading, isSuccess }
-    ] = useCreateContactMutation();
-    const { data: contacts,
-        // error, isFetching
-    } = useGetContactsQuery();
+    const [createContact, { isLoading, isSuccess}] = useCreateContactMutation();
+    const { data: contacts } = useGetContactsQuery();
 
     const [name, setName] = useState('');
     const [number, setNumber] = useState('');
@@ -36,10 +33,10 @@ const ContactForm = () => {
     const onSubmitContact = ({ name, number }) => {
         
         contacts.some(contact => contact.name.toLocaleLowerCase() === name.toLocaleLowerCase())
-            ? Notify.failure(`${name} is already in contacts`) :
-            createContact({ name, number }) && resetForm();
-        
+            ? Notify.failure(`${name} is already in contacts`)
+            : createContact({ name, number }) && resetForm();
     };
+
 
     const onClickSubmit = (evt) => {
         evt.preventDefault();
@@ -52,6 +49,11 @@ const ContactForm = () => {
         setNumber("");
     };
   
+    useEffect(() => {
+        if (isSuccess) {
+        Notify.success(`Contact was created.`);
+        };
+    }, [isSuccess]);
     return (
         <>
                 <Box
@@ -86,7 +88,8 @@ const ContactForm = () => {
                     onChange={handleInputChange}
                     required />
               
-                    <Button variant="contained" type="submit">Add contact</Button>
+                <Button variant="contained" type="submit">Add contact</Button>
+                {isLoading && <ContactLoader/>}
                     </Box>
         </>
     );

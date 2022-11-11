@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Input } from 'components/ContactForm/ContactForm.styled';
 import { setFilter } from 'redux/filterSlice/slice';
 import { selectFilter } from 'redux/selectors';
+import TextField from '@mui/material/TextField';
 
 const Filter = () => {
     const dispatch = useDispatch();
@@ -19,8 +20,9 @@ const Filter = () => {
         p={4}
         alignItems="center"
     >
-        <label> Find contacts by name
-            <Input
+        <label> 
+            <TextField
+                id="filled-basic" label="Find contacts by name" variant="filled"
                 type="text"
                 name="filter"
                 value={filter}

@@ -3,8 +3,9 @@ import { Box } from "components/Box";
 import { Outlet } from "react-router-dom";
 import { getIsLoggedIn } from "redux/auth/auth-selectors";
 import { useSelector } from "react-redux";
-import { AuthNav } from "components/AuthNav";
+import { AuthNav } from "components/AuthNav/AuthNav";
 import { UserMenu } from "components/UserMenu";
+import { NavItem } from "../AuthNav/AuthNav.styled";
 
 export const Layout = () => {
     const isLoggedIn = useSelector(getIsLoggedIn);
@@ -15,12 +16,12 @@ export const Layout = () => {
                 display='flex'
                 alingItems="center"
                 justifyContent='space-around'
-                borderBottom = '1px solid blue'
+                borderBottom = '1px solid black'
             >
-            <nav>
-                <NavLink to='home'>Home</NavLink>
-                <NavLink to='contacts'>Your contacts</NavLink>
-            </nav>
+            <Box as="nav" display="flex" gridGap={3}>
+                {!isLoggedIn && <NavItem to='home'>Home</NavItem>}
+                <NavItem to='contacts'>Your contacts</NavItem>
+            </Box>
             {isLoggedIn
                 ?   <UserMenu/>
                 :   <AuthNav/>

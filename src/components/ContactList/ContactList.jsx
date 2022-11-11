@@ -1,19 +1,19 @@
 import { Box } from 'components/Box';
-import { Button } from '../ContactForm/ContactForm.styled';
 import { useSelector } from 'react-redux';
 // import { deleteContact, fetchContacts } from 'redux/operations';
 import { selectFilter } from 'redux/selectors';
-import { ContactOrder, ContactLi } from './ContactList.styled';
-import { useGetContactsQuery, useDeleteContactMutation } from 'redux/contacts/slice';
+import { ContactOrder } from './ContactList.styled';
+import { useGetContactsQuery } from 'redux/contacts/slice';
 import { showCurrentContacts } from 'components/utils/getFilteredContacts';
 import { useEffect } from 'react';
+import { ContactItem } from '../ContactItem/ContactItem'
+
 
 const ContactList = () => {
     const filter = useSelector(selectFilter);
     // const dispatch = useDispatch();
-    const { data, isLoading, refetch  } = useGetContactsQuery();
-    
-    const [deleteContact] = useDeleteContactMutation();
+    const { data, isLoading, error, refetch  } = useGetContactsQuery();
+
     
     useEffect(() => {
         refetch();
@@ -24,16 +24,9 @@ const currentContacts = showCurrentContacts(filter, data);
     return (
         <Box pl={6} pr={6}>
             <ContactOrder>
-                {!isLoading && currentContacts.map((({ id, name, number }) => {
+                {!isLoading && !error && currentContacts.map(((contact) => {
                     return (
-                        <ContactLi key={id}>
-                            {name}: {number}
-                            <Button onClick={() => {
-                                deleteContact(id)
-                            }}>
-                                Удалить
-                            </Button>
-                        </ContactLi>
+                        <ContactItem key={contact.id} {...contact} />
                     )
                 }))}
             </ContactOrder>

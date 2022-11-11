@@ -1,12 +1,12 @@
 import { CirclesWithBar } from 'react-loader-spinner';
 import { Box } from "../Box";
 
-const Loader = () => {
+const AuthLoader = () => {
     return (
         <Box
               position="absolute"
               top="50%"
-              left="50%"
+              left="47%"
           >
             <CirclesWithBar
                 height="100"
@@ -24,4 +24,4 @@ const Loader = () => {
     )
 }
 
-export default Loader
+export default AuthLoader

@@ -1,16 +1,15 @@
 import { Box } from "components/Box"
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { login } from "redux/auth/auth-operations";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { getIsLoggedIn } from "redux/auth/auth-selectors";
-import { Navigate } from "react-router-dom";
+import { useAuth } from "hooks/useAuth";
+import Loader from "../components/Loaders/AuthLoader"
 
 export const LoginForm = () => {
-
-    const isUserLogin = useSelector(getIsLoggedIn)
+    const { isLoading, error } = useAuth();
     const dispatch = useDispatch()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -37,14 +36,11 @@ export const LoginForm = () => {
         setEmail('');
         setPassword('');
     }
-    if (isUserLogin) {
-        console.log("Вы вошли в аккаунт")
-        return(<Navigate to="/contacts"/>)
-    }
+    
   return (
-        <Box>
+        <Box p={6}>
             <Typography variant='h2' align='center'>Login</Typography>
-
+            {!error && isLoading && <Loader/>}
             <Box
                     as="form"
                     onSubmit={handleSubmit}
