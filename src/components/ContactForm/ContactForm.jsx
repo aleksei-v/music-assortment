@@ -64,7 +64,7 @@ const ContactForm = () => {
                     alignItems="center"
                 >
               
-                <TextField id="margin-normal"
+                <TextField 
                     margin="normal"
                     label="Contact's name"
                     title="Name may contain only letters, apostrophe, dash and spaces.
@@ -75,7 +75,7 @@ const ContactForm = () => {
                     value={name} onChange={handleInputChange}
                     required /> 
               
-                <TextField id="margin-normal"
+                <TextField 
                     margin="normal"
                     title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                     label="Contact's number"

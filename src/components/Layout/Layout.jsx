@@ -14,7 +14,6 @@ const Layout = () => {
                 display='flex'
                 alingItems="center"
                 justifyContent='space-around'
-                borderBottom='1px solid black'
             >
                 <Box as="nav" display="flex" gridGap={3}>
                     {!isUserLogin && <NavItem to='home'>Home</NavItem>}
