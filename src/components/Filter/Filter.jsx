@@ -1,7 +1,6 @@
 
 import { Box } from 'components/Box';
 import { useSelector, useDispatch } from "react-redux";
-import { Input } from 'components/ContactForm/ContactForm.styled';
 import { setFilter } from 'redux/filterSlice/slice';
 import { selectFilter } from 'redux/selectors';
 import TextField from '@mui/material/TextField';
