@@ -1,8 +1,8 @@
 
 import { Box } from 'components/Box';
 import { useSelector, useDispatch } from "react-redux";
-import { setFilter } from 'redux/filterSlice/slice';
-import { selectFilter } from 'redux/selectors';
+import { setFilter } from 'redux/filter/slice';
+import { selectFilter } from 'redux/filter/selectors';
 import TextField from '@mui/material/TextField';
 
 const Filter = () => {

@@ -8,13 +8,13 @@ import Typography from '@mui/material/Typography';
 import { useAuth } from "hooks/useAuth";
 import Loader from "../components/Loaders/AuthLoader"
 
-export const LoginForm = () => {
+const LoginForm = () => {
     const { isLoading, error } = useAuth();
     const dispatch = useDispatch()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleChange = ({target: { name, value }}) => {
+    const handleChange = ({ target: { name, value } }) => {
         // const { name, value } = e.target;
         switch (name) {
             case 'email':
@@ -28,31 +28,33 @@ export const LoginForm = () => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        dispatch(login({email, password}))
+        dispatch(login({ email, password }))
         resetForm();
-    }
+    };
 
     const resetForm = () => {
         setEmail('');
         setPassword('');
-    }
+    };
     
-  return (
+    return (
         <Box p={6}>
             <Typography variant='h2' align='center'>Login</Typography>
-            {!error && isLoading && <Loader/>}
+            {!error && isLoading && <Loader />}
             <Box
-                    as="form"
-                    onSubmit={handleSubmit}
-                    display="flex"
-                    flexDirection="column"
-                    p={4}
-                    alignItems="center"
-                >
-                <TextField margin="normal" label="Your email" variant="standard" type="email" name="email" value={email} onChange={handleChange} required/> 
-                <TextField  margin="normal" label="Your password" variant="standard" type="password" name="password" value={password} onChange={handleChange} required/>
-              <Button variant="contained" type="submit">Log in</Button>
+                as="form"
+                onSubmit={handleSubmit}
+                display="flex"
+                flexDirection="column"
+                p={4}
+                alignItems="center"
+            >
+                <TextField margin="normal" label="Your email" variant="standard" type="email" name="email" value={email} onChange={handleChange} required />
+                <TextField margin="normal" label="Your password" variant="standard" type="password" name="password" value={password} onChange={handleChange} required />
+                <Button variant="contained" type="submit">Log in</Button>
             </Box>
         </Box>
-    )
-}
+    );
+};
+
+export default LoginForm;

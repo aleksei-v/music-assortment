@@ -4,7 +4,7 @@ import Filter from "components/Filter";
 import Title from "components/Title";
 import { Box } from "components/Box";
 
-export const Contacts = () => {
+const Contacts = () => {
     return (
     <>
         <Box>
@@ -17,3 +17,5 @@ export const Contacts = () => {
     </>
     )
 };
+
+export default Contacts;

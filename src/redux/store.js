@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { filterSlice } from "./filterSlice/slice";
+import { filterSlice } from "./filter/slice";
 import authReducer from "./auth/auth-slice";
 import { contactsApi } from "./contacts/slice";
 import {

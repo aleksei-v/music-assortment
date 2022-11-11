@@ -1,33 +1,34 @@
 import { Box } from "components/Box";
-import { Outlet } from "react-router-dom";
-import { getIsLoggedIn } from "redux/auth/auth-selectors";
-import { useSelector } from "react-redux";
 import { AuthNav } from "components/AuthNav/AuthNav";
 import { UserMenu } from "components/UserMenu";
 import { NavItem } from "../AuthNav/AuthNav.styled";
+import CustomOutlet from '../../utils/Outlet';
+import { useAuth } from 'hooks/useAuth';
 
-export const Layout = () => {
-    const isLoggedIn = useSelector(getIsLoggedIn);
+const Layout = () => {
+    const { isUserLogin } = useAuth();
 
-    return(
-    <Box>
+    return (
+        <Box>
             <Box as='header'
                 display='flex'
                 alingItems="center"
                 justifyContent='space-around'
-                borderBottom = '1px solid black'
+                borderBottom='1px solid black'
             >
-            <Box as="nav" display="flex" gridGap={3}>
-                {!isLoggedIn && <NavItem to='home'>Home</NavItem>}
-                <NavItem to='contacts'>Your contacts</NavItem>
-            </Box>
-            {isLoggedIn
-                ?   <UserMenu/>
-                :   <AuthNav/>
+                <Box as="nav" display="flex" gridGap={3}>
+                    {!isUserLogin && <NavItem to='home'>Home</NavItem>}
+                    <NavItem to='contacts'>Your contacts</NavItem>
+                </Box>
+                {isUserLogin
+                    ? <UserMenu />
+                    : <AuthNav />
                 }
-        </Box>
-        <Outlet/>
+            </Box>
+            <CustomOutlet />
         </Box>
         
     );
-}
+};
+
+export default Layout;

@@ -1,7 +1,6 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useEffect, useState } from "react";
 import { Box } from 'components/Box';
-// import { Input, AddButton } from './ContactForm.styled';
 import { useGetContactsQuery, useCreateContactMutation } from 'redux/contacts/slice';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -30,8 +29,7 @@ const ContactForm = () => {
         }
     };
 
-    const onSubmitContact = ({ name, number }) => {
-        
+    const onSubmitContact = ({ name, number }) => {       
         contacts.some(contact => contact.name.toLocaleLowerCase() === name.toLocaleLowerCase())
             ? Notify.failure(`${name} is already in contacts`)
             : createContact({ name, number }) && resetForm();
@@ -54,6 +52,7 @@ const ContactForm = () => {
         Notify.success(`Contact was created.`);
         };
     }, [isSuccess]);
+
     return (
         <>
                 <Box
@@ -94,6 +93,7 @@ const ContactForm = () => {
         </>
     );
 };
+
 export default ContactForm;
 
 

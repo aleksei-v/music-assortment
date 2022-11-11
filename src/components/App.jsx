@@ -15,7 +15,6 @@ export const App = () => {
   }, [dispatch]);
         
   return (<Box p={5} color="black">
-    {/* {!isRefresh && <UserRoutes /> && <Loader />} */}
     {isRefresh
       ? <Loader />
       : <UserRoutes />

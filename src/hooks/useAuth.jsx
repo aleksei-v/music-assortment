@@ -5,7 +5,8 @@ import {
   getStatusLoading,
   getStatusError,
   getUsername,
-  getStatusRefresh
+  getStatusRefresh,
+  getIsLoggedIn
 } from 'redux/auth/auth-selectors';
 
 
@@ -14,10 +15,12 @@ export const useAuth = () => {
   const isError = useSelector(getStatusError);
   const userName = useSelector(getUsername);
   const isRefresh = useSelector(getStatusRefresh);
+  const isUserLogin = useSelector(getIsLoggedIn)
   return {
     isLoading,
     isError,
     userName,
     isRefresh,
+    isUserLogin
   };
 };
