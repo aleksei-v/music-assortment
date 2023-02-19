@@ -3,6 +3,8 @@ import './App.css';
 import Dropdown from './Dropdown';
 import axios from 'axios';
 import { Credentials } from './Credentials';
+import ListBox from './ListBox';
+import SongDetail from './SongDetail';
 
 function App() {
   const {ClientId, ClientSecret} = Credentials();
@@ -15,8 +17,16 @@ function App() {
   const [token, setToken] = useState('');
   const [genres, setGenres] = useState({ selectedGenre: '', listOfGenresFromAPI: [] });
   const [playlist, setPlaylist] = useState({ selectedPlaylist: '', listOfPlaylistFromAPI: [] });
-  const [tracks, setTracks] = useState({selectedTrack: '', listOfTracksFromAPI: []});
-
+  const [tracks, setTracks] = useState({ selectedTrack: '', listOfTracksFromAPI: [] });
+  const [trackDetail, setTrackDetail] = useState(null);
+useEffect(() => {
+  if (playlist.listOfPlaylistFromAPI.length > 0) {
+    setPlaylist({
+      selectedPlaylist: playlist.listOfPlaylistFromAPI[0].id,
+      listOfPlaylistFromAPI: playlist.listOfPlaylistFromAPI
+    });
+  }
+}, [playlist.listOfPlaylistFromAPI]);
   useEffect(() => {
     axios('https://accounts.spotify.com/api/token', {
       headers: {
@@ -68,34 +78,46 @@ function App() {
     })
   };
 
-//   const buttonClicked = e => {
-//     e.preventDefault();
+  const buttonClicked = e => {
+    e.preventDefault();
 
-//  axios(`https://api.spotify.com/v1/playlists/${playlist.selectedPlaylist}/tracks?limit=10`, {
-//       method: 'GET',
-//       headers: { 'Authorization': 'Bearer ' + token }
-//     })
-//    .then(tracksResponse => {
-//      setTracks({
-//        selectedTrack: tracks.selectedTrack,
-//        listOfTracksFromAPI: tracksResponse.data.items
-//      })
-//    }
-//       )
-//   }
+    axios(`https://api.spotify.com/v1/playlists/${playlist.selectedPlaylist}/tracks?limit=10`, {
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+      .then(tracksResponse => {
+        setTracks({
+          selectedTrack: tracks.selectedTrack,
+          listOfTracksFromAPI: tracksResponse.data.items
+        })
+      }
+      )
+  };
+  const listboxClicked = val => {
+    const currentTracks = [...tracks.listOfTracksFromAPI];
+    const trackInfo = currentTracks.filter(el => el.track.id === val);
+    setTrackDetail(trackInfo[0].track);
+  }
   
   return (
-    <>
-      <form>
+    <div className='container'>
+      <form onSubmit={buttonClicked}>
+        
         <div className='container'>
-          <Dropdown options={genres.listOfGenresFromAPI} selectedValue={genres.selectedGenre} changed={genreChanged} />
-          <Dropdown options={playlist.listOfPlaylistFromAPI} selectedValue={playlist.selectedPlaylist} changed={playlistChanged} />
-          <button type='submit'>
-            Search
-          </button>
+          <Dropdown label="Genre:" options={genres.listOfGenresFromAPI} selectedValue={genres.selectedGenre} changed={genreChanged} />
+          <Dropdown label="Playlist:" options={playlist.listOfPlaylistFromAPI} selectedValue={playlist.selectedPlaylist} changed={playlistChanged} />
+          <div className='row col-sm-12 px-0 form-group'>
+            <button type='submit' className='btn btn-success col-sm-6 my-3'>
+              Search
+            </button>
+            <div className='row'>
+              <ListBox items={tracks.listOfTracksFromAPI} clicked={listboxClicked} />
+              {trackDetail && <SongDetail {...trackDetail} />}
+            </div>
+          </div>
         </div>
       </form>
-    </>
+    </div>
   );
 }
 
