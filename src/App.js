@@ -5,7 +5,7 @@ import ListBox from './ListBox';
 import SongDetail from './SongDetail';
 import { fetchCategories, fetchGenres, fetchPlaylist } from 'services/fetchGenres';
 function App() {
-    const CLIENT_ID = "dc433a935d2e4e958ad9d3f3caf9aca0"
+    // const CLIENT_ID = ''
     const REDIRECT_URI = "http://localhost:3000"
     const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
     const RESPONSE_TYPE = "token"
