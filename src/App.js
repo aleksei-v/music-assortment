@@ -1,15 +1,31 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
 import Dropdown from './Dropdown';
-import axios from 'axios';
-import { Credentials } from './Credentials';
 import ListBox from './ListBox';
 import SongDetail from './SongDetail';
-
+import { fetchCategories, fetchGenres, fetchPlaylist } from 'services/fetchGenres';
 function App() {
-  const {ClientId, ClientSecret} = Credentials();
+    const CLIENT_ID = "dc433a935d2e4e958ad9d3f3caf9aca0"
+    const REDIRECT_URI = "http://localhost:3000"
+    const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
+    const RESPONSE_TYPE = "token"
   
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState(localStorage.getItem('token'));
+
+  useEffect(() => {
+    const hash = window.location.hash;
+
+    let token = localStorage.getItem('token');
+
+   if (!token && hash) {
+     token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1];
+
+     window.location.hash = "";
+     localStorage.setItem('token', token);
+     setToken(token);
+   }
+  }, [])
+  
   const [genres, setGenres] = useState({ selectedGenre: '', listOfGenresFromAPI: [] });
   const [playlist, setPlaylist] = useState({ selectedPlaylist: '', listOfPlaylistFromAPI: [] });
   const [tracks, setTracks] = useState({ selectedTrack: '', listOfTracksFromAPI: [] });
@@ -22,48 +38,39 @@ useEffect(() => {
     });
   }
 }, [playlist.listOfPlaylistFromAPI]);
-  useEffect(() => {
-    axios('https://accounts.spotify.com/api/token', {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + btoa(ClientId + ':' + ClientSecret)
-      },
-      data: 'grant_type=client_credentials',
-      method: 'POST'
-    })
-      .then(tokenResponse => {
-        setToken(tokenResponse.data.access_token)
 
-        axios('https://api.spotify.com/v1/browse/categories?locale=sv_US', {
-          method: 'GET',
-          headers: { 'Authorization': 'Bearer ' + tokenResponse.data.access_token }
-        })
-          .then(genreResponse => {
+  useEffect(() => {
+    const getMusicGenres = async () => {
+      try {
+        const genreResponse = await fetchGenres(token);
             setGenres({
               selectedGenre: genres.selectedGenre,
-              listOfGenresFromAPI: genreResponse.data.categories.items,
-            })
+              listOfGenresFromAPI: genreResponse.categories.items,
           });
-      })
-  }, [genres.selectedGenre, ClientId, ClientSecret])
+      
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getMusicGenres()
+  }, [genres.selectedGenre, token])
   const genreChanged = val => {
     setGenres({
       selectedGenre: val,
       listOfGenresFromAPI: genres.listOfGenresFromAPI
     })
-
-    axios(`https://api.spotify.com/v1/browse/categories/${val}/playlists?limit=10`, {
-      method: 'GET',
-      headers: { 'Authorization': 'Bearer ' + token }
-    })
-      .then(playlistResponse => {
+    const getMusicCategories = async() => {
+      try {
+        const categoriesResponse = await fetchCategories(token, val);
         setPlaylist({
           selectedPlaylist: playlist.selectedPlaylist,
-          listOfPlaylistFromAPI: playlistResponse.data.playlists.items
+          listOfPlaylistFromAPI: categoriesResponse.playlists.items
         });
+      } catch (error) {
+        console.log(error)
       }
-      
-      )
+    }
+    getMusicCategories()
   };
 
   const playlistChanged = val => {
@@ -75,28 +82,35 @@ useEffect(() => {
 
   const buttonClicked = e => {
     e.preventDefault();
-
-    axios(`https://api.spotify.com/v1/playlists/${playlist.selectedPlaylist}/tracks?limit=10`, {
-      method: 'GET',
-      headers: { 'Authorization': 'Bearer ' + token }
-    })
-      .then(tracksResponse => {
+    const getMusicPlaylist = async () => {
+      try {
+        const playlistResponse = await fetchPlaylist(token, playlist.selectedPlaylist);
         setTracks({
           selectedTrack: tracks.selectedTrack,
-          listOfTracksFromAPI: tracksResponse.data.items
-        })
-      }
-      )
+          listOfTracksFromAPI: playlistResponse.items
+        });
+      } catch (error) {
+        console.log(error)
+      };
+    };
+    getMusicPlaylist()
   };
   const listboxClicked = val => {
     const currentTracks = [...tracks.listOfTracksFromAPI];
     const trackInfo = currentTracks.filter(el => el.track.id === val);
     setTrackDetail(trackInfo[0].track);
   }
-  
+  const logout = () => {
+    setToken("");
+    localStorage.removeItem("token")
+  }
   return (
     <div className='container'>
-      <form onSubmit={buttonClicked}>
+      {!token
+        ? <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
+        to Spotify</a>
+        : <><button onClick={logout}>Logout</button>
+          <form onSubmit={buttonClicked}>
         
         <div className='container'>
           <Dropdown label="Genre:" options={genres.listOfGenresFromAPI} selectedValue={genres.selectedGenre} changed={genreChanged} />
@@ -111,7 +125,11 @@ useEffect(() => {
             </div>
           </div>
         </div>
-      </form>
+      </form></>
+      }
+      
+      
+
     </div>
   );
 }
