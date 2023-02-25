@@ -46,3 +46,23 @@ export async function fetchPlaylist(token, playlist) {
          throw error;
     };
 };
+
+
+
+export async function fetchArtists(token, searchKey) {
+    try {
+        const { data } = await axios.get(`https://api.spotify.com/v1/search`, {
+            headers: {
+               Authorization: `Bearer ${token}`
+            },
+            params: {
+                q: searchKey,
+                type: "artist"
+            }
+        });
+        return data;
+    } catch (error) {
+        console.error('Something wrong! Can not get token' + error);
+         throw error;
+    };
+};

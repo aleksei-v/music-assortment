@@ -3,7 +3,7 @@ import './App.css';
 import Dropdown from './Dropdown';
 import ListBox from './ListBox';
 import SongDetail from './SongDetail';
-import { fetchCategories, fetchGenres, fetchPlaylist } from 'services/fetchGenres';
+import { fetchCategories, fetchGenres, fetchPlaylist, fetchArtists } from './services/fretchMusic';
 function App() {
     const CLIENT_ID = 'dc433a935d2e4e958ad9d3f3caf9aca0'
     const REDIRECT_URI = "http://localhost:3000"
@@ -22,10 +22,12 @@ function App() {
 
      window.location.hash = "";
      localStorage.setItem('token', token);
-     setToken(token);
+     
    }
+    setToken(token);
   }, [])
-  
+  const [searchKey, setSearchKey] = useState("");
+  const [artists, setArtists] = useState([])
   const [genres, setGenres] = useState({ selectedGenre: '', listOfGenresFromAPI: [] });
   const [playlist, setPlaylist] = useState({ selectedPlaylist: '', listOfPlaylistFromAPI: [] });
   const [tracks, setTracks] = useState({ selectedTrack: '', listOfTracksFromAPI: [] });
@@ -104,6 +106,36 @@ useEffect(() => {
     setToken("");
     localStorage.removeItem("token")
   }
+
+
+  const searchArtists = e => {
+    e.preventDefault();
+    const getArtists = async () => {
+      try {
+        const artistInfo = await fetchArtists(token, searchKey);
+        setArtists(artistInfo.artists.items)
+      } catch (error) {
+        console.log(error)
+      }
+    };
+    getArtists();
+   
+  }
+
+  // const renderArtists = (artists) => {
+  //   console.log(artists)
+  //   return artists.map(
+  //     artist => (
+       
+  //         <div key={artist.id}>
+  //         {artist.name}
+  //         {artist.images.length
+  //           ? <img width='100%' src={artist.images[0].url} alt={artist.name} />
+  //           : <div>No image</div> }
+     
+  //       </div>
+  //   ))
+  // }
   return (
     <div className='container'>
       {!token
@@ -127,8 +159,32 @@ useEffect(() => {
         </div>
       </form></>
       }
-      
-      
+      {token ? 
+        <form className='mt-4' onSubmit={searchArtists}>
+          <input type="text" onChange={e => setSearchKey(e.target.value)}/>
+          <button type='submit'>Search</button>
+        
+        </form>
+        
+        : <h2>
+          Please login to use app
+      </h2>
+
+        
+        
+      }
+    
+      {artists.length !== 0 && artists.map(
+      artist => (
+       
+          <div key={artist.id}>
+          {artist.name}
+          {artist.images.length
+            ? <img width='100%' src={artist.images[0].url} alt={artist.name} />
+            : <div>No image</div> }
+     
+        </div>
+    ))}
 
     </div>
   );
