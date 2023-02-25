@@ -6,7 +6,7 @@ import SongDetail from './SongDetail';
 import { fetchCategories, fetchGenres, fetchPlaylist, fetchArtists } from './services/fretchMusic';
 function App() {
     const CLIENT_ID = 'dc433a935d2e4e958ad9d3f3caf9aca0'
-    const REDIRECT_URI = "http://localhost:3000"
+    const REDIRECT_URI = "aleksei-v.github.io/music-assortment/"
     const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
     const RESPONSE_TYPE = "token"
   
@@ -178,11 +178,11 @@ useEffect(() => {
       artist => (
        
           <div key={artist.id}>
-          {artist.name}
+          
           {artist.images.length
             ? <img width='100%' src={artist.images[0].url} alt={artist.name} />
             : <div>No image</div> }
-     
+          {artist.name}
         </div>
     ))}
 
