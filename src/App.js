@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Fragment} from 'react';
 import './App.css';
 import Dropdown from './Dropdown';
 import ListBox from './ListBox';
 import SongDetail from './SongDetail';
 import { fetchCategories, fetchGenres, fetchPlaylist, fetchArtists } from './services/fretchMusic';
+import { Route, Routes, Outlet } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 function App() {
     const CLIENT_ID = 'dc433a935d2e4e958ad9d3f3caf9aca0'
     const REDIRECT_URI = "http://localhost:3000"
@@ -26,12 +28,12 @@ function App() {
    }
     setToken(token);
   }, [])
-  const [searchKey, setSearchKey] = useState("");
   const [artists, setArtists] = useState([])
   const [genres, setGenres] = useState({ selectedGenre: '', listOfGenresFromAPI: [] });
   const [playlist, setPlaylist] = useState({ selectedPlaylist: '', listOfPlaylistFromAPI: [] });
   const [tracks, setTracks] = useState({ selectedTrack: '', listOfTracksFromAPI: [] });
   const [trackDetail, setTrackDetail] = useState(null);
+  
 useEffect(() => {
   if (playlist.listOfPlaylistFromAPI.length > 0) {
     setPlaylist({
@@ -110,6 +112,8 @@ useEffect(() => {
 
   const searchArtists = e => {
     e.preventDefault();
+
+    const searchKey = e.target[0].value
     const getArtists = async () => {
       try {
         const artistInfo = await fetchArtists(token, searchKey);
@@ -122,27 +126,8 @@ useEffect(() => {
    
   }
 
-  // const renderArtists = (artists) => {
-  //   console.log(artists)
-  //   return artists.map(
-  //     artist => (
-       
-  //         <div key={artist.id}>
-  //         {artist.name}
-  //         {artist.images.length
-  //           ? <img width='100%' src={artist.images[0].url} alt={artist.name} />
-  //           : <div>No image</div> }
-     
-  //       </div>
-  //   ))
-  // }
-  return (
-    <div className='container'>
-      {!token
-        ? <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
-        to Spotify</a>
-        : <><button onClick={logout}>Logout</button>
-          <form onSubmit={buttonClicked}>
+  const MusicSelector = () => {
+    return (  <form onSubmit={buttonClicked}>
         
         <div className='container'>
           <Dropdown label="Genre:" options={genres.listOfGenresFromAPI} selectedValue={genres.selectedGenre} changed={genreChanged} />
@@ -157,36 +142,66 @@ useEffect(() => {
             </div>
           </div>
         </div>
-      </form></>
-      }
-      {token ? 
-        <form className='mt-4' onSubmit={searchArtists}>
-          <input type="text" onChange={e => setSearchKey(e.target.value)}/>
-          <button type='submit'>Search</button>
-        
-        </form>
-        
-        : <h2>
-          Please login to use app
-      </h2>
-
-        
-        
-      }
-    
-      {artists.length !== 0 && artists.map(
-      artist => (
+      </form>)
+  }
+  const Layout = () => {
+    return (
+      <div className='container'>
+        <h1>Spotify App</h1>
+        {!token
+          ? <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
+            to Spotify</a>
+          : <>
+            <button onClick={logout}>Logout</button>
        
-          <div key={artist.id}>
+            <NavLink className="row" to='author'>find music by author</NavLink>
+            <NavLink className="row" to='selector'>find music by selector</NavLink>
+          </>
+        }
+       
+        <Outlet />
+      </div>
+    )
+  };
+  const MusicAuthor = () => {
+    return (
+      <>
+        <form className='mt-4' onSubmit={searchArtists}>
+          <input type="text" />
+          <button type='submit'>Search</button>
+        </form>
+    
+        {artists.length !== 0 && artists.map(
+          artist => {
+            console.log(artist)
+            return (
+            
+              <div key={artist.id}>
           
-          {artist.images.length
-            ? <img width='100%' src={artist.images[0].url} alt={artist.name} />
-            : <div>No image</div> }
-           {artist.name}
-        </div>
-    ))}
+                {artist.images.length
+                  ? <img width='100%' src={artist.images[0].url} alt={artist.name} />
+                  : <div>No image</div>}
+                <a href={artist.external_urls.spotify} rel="noopener noreferrer">Go to Spotify acc</a>
+                {artist.name}
+              </div>
+            )
+          })
+        }
+      </>
+    )
+  };
 
-    </div>
+  return (
+    <Routes>
+      <Route path='/' element={<Layout />} >
+        
+        <Route path="selector" element={<MusicSelector />} />
+        <Route path="author" element={<MusicAuthor />} />
+
+
+
+      </Route>
+    </Routes>
   );
 }
 

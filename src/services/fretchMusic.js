@@ -3,7 +3,6 @@ import axios from 'axios';
 axios.defaults.baseURL = 'https://api.spotify.com';
 
 export async function fetchGenres(token) {
-    console.log(token)
     try {
         const { data } = await axios.get('/v1/browse/categories?locale=sv_US', {
             headers: {
