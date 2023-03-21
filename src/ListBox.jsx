@@ -26,4 +26,4 @@ const ListBox = ({ items, clicked }) => {
   )
 }
 
-export default ListBox
+export default ListBox;

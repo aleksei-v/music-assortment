@@ -1,39 +1,36 @@
-import React, {useState, useEffect, Fragment} from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css';
 import Dropdown from './Dropdown';
 import ListBox from './ListBox';
 import SongDetail from './SongDetail';
-import { fetchCategories, fetchGenres, fetchPlaylist, fetchArtists } from './services/fretchMusic';
-import { Route, Routes, Outlet } from 'react-router-dom';
-import { NavLink } from "react-router-dom";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { fetchCategories, fetchGenres, fetchPlaylist, fetchArtists } from './services/fetchMusic';
+import AuthorsForm from 'AuthorsForm';
+import { Button } from 'react-bootstrap';
+import { h1, h2, h3, h4, h5, h6 } from 'react-bootstrap';
 function App() {
-    const CLIENT_ID = 'dc433a935d2e4e958ad9d3f3caf9aca0'
-    const REDIRECT_URI = "http://localhost:3000"
-    const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
-    const RESPONSE_TYPE = "token"
-  
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const CLIENT_ID = 'dc433a935d2e4e958ad9d3f3caf9aca0'
+  const REDIRECT_URI = "http://localhost:3000"
+  const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
+  const RESPONSE_TYPE = "token"
 
+  const [token, setToken] = useState(localStorage.getItem('token'));
   useEffect(() => {
     const hash = window.location.hash;
-
     let token = localStorage.getItem('token');
-
-   if (!token && hash) {
-     token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1];
-
-     window.location.hash = "";
-     localStorage.setItem('token', token);
+    if (!token && hash) {
+      token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1];
+      window.location.hash = "";
+      localStorage.setItem('token', token);
      
-   }
+    }
     setToken(token);
-  }, [])
+  }, []);
   const [artists, setArtists] = useState([])
   const [genres, setGenres] = useState({ selectedGenre: '', listOfGenresFromAPI: [] });
   const [playlist, setPlaylist] = useState({ selectedPlaylist: '', listOfPlaylistFromAPI: [] });
   const [tracks, setTracks] = useState({ selectedTrack: '', listOfTracksFromAPI: [] });
   const [trackDetail, setTrackDetail] = useState(null);
-  
 useEffect(() => {
   if (playlist.listOfPlaylistFromAPI.length > 0) {
     setPlaylist({
@@ -42,7 +39,6 @@ useEffect(() => {
     });
   }
 }, [playlist.listOfPlaylistFromAPI]);
-
   useEffect(() => {
     const getMusicGenres = async () => {
       try {
@@ -76,14 +72,12 @@ useEffect(() => {
     }
     getMusicCategories()
   };
-
   const playlistChanged = val => {
     setPlaylist({
       selectedPlaylist: val,
       listOfPlaylistFromAPI: playlist.listOfPlaylistFromAPI
     })
   };
-
   const buttonClicked = e => {
     e.preventDefault();
     const getMusicPlaylist = async () => {
@@ -108,12 +102,13 @@ useEffect(() => {
     setToken("");
     localStorage.removeItem("token")
   }
-
-
   const searchArtists = e => {
     e.preventDefault();
-
-    const searchKey = e.target[0].value
+    if (!e.target[0].value) {
+      Notify.info("Start to enter artist's name")
+      return;
+    }
+   const searchKey = e.target[0].value
     const getArtists = async () => {
       try {
         const artistInfo = await fetchArtists(token, searchKey);
@@ -123,13 +118,22 @@ useEffect(() => {
       }
     };
     getArtists();
-   
-  }
 
+  }
+  // const Button = styled.button`
+  // border: none;
+  // padding: 12px 24px;
+  // background-color: #4f87ff;
+  // color: #fff;
+  // font-size: 16px;
+  // cursor: pointer;
+  // border-radius: 25px;
+  // `
   const MusicSelector = () => {
-    return (  <form onSubmit={buttonClicked}>
+    return( <form onSubmit={buttonClicked}>
         
-        <div className='container'>
+      <div>
+        <h2>Searching by genre</h2>
           <Dropdown label="Genre:" options={genres.listOfGenresFromAPI} selectedValue={genres.selectedGenre} changed={genreChanged} />
           <Dropdown label="Playlist:" options={playlist.listOfPlaylistFromAPI} selectedValue={playlist.selectedPlaylist} changed={playlistChanged} />
           <div className='row col-sm-12 px-0 form-group'>
@@ -144,65 +148,39 @@ useEffect(() => {
         </div>
       </form>)
   }
-  const Layout = () => {
-    return (
-      <div className='container'>
-        <h1>Spotify App</h1>
-        {!token
-          ? <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
-            to Spotify</a>
-          : <>
-            <button onClick={logout}>Logout</button>
-       
-            <NavLink className="row" to='author'>find music by author</NavLink>
-            <NavLink className="row" to='selector'>find music by selector</NavLink>
-          </>
-        }
-       
-        <Outlet />
-      </div>
-    )
-  };
-  const MusicAuthor = () => {
-    return (
-      <>
-        <form className='mt-4' onSubmit={searchArtists}>
-          <input type="text" />
-          <button type='submit'>Search</button>
-        </form>
-    
-        {artists.length !== 0 && artists.map(
-          artist => {
-            console.log(artist)
-            return (
-            
-              <div key={artist.id}>
-          
-                {artist.images.length
-                  ? <img width='100%' src={artist.images[0].url} alt={artist.name} />
-                  : <div>No image</div>}
-                <a href={artist.external_urls.spotify} rel="noopener noreferrer">Go to Spotify acc</a>
-                {artist.name}
-              </div>
-            )
-          })
-        }
-      </>
-    )
-  };
+  // const SearchArtistsForm = ({ searchArtists }) =>
+  // {
+  //   return (
+     
+  //   );
+  // }
+ 
 
   return (
-    <Routes>
-      <Route path='/' element={<Layout />} >
+    <div className='container'>
+      {!token
+        ? <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
+        to Spotify</a>
+        : <>
+          <div className='row'>
+            <div className='col-md-11'>
+              <h1>Spotify</h1>
+            </div>
+            <div className='col-md-1 d-flex justify-content-center align-items-center'>
+              <Button onClick={logout}>Logout</Button>
+            </div>
+          </div>
+          <AuthorsForm searchArtists={searchArtists} artists={artists} />
         
-        <Route path="selector" element={<MusicSelector />} />
-        <Route path="author" element={<MusicAuthor />} />
+          <MusicSelector />
+         
+         
+        </>
+      }
+    
+      
 
-
-
-      </Route>
-    </Routes>
+    </div>
   );
 }
-
 export default App;
