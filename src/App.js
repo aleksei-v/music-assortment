@@ -7,7 +7,6 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { fetchCategories, fetchGenres, fetchPlaylist, fetchArtists } from './services/fetchMusic';
 import AuthorsForm from 'AuthorsForm';
 import { Button } from 'react-bootstrap';
-import { h1, h2, h3, h4, h5, h6 } from 'react-bootstrap';
 function App() {
   const CLIENT_ID = 'dc433a935d2e4e958ad9d3f3caf9aca0'
   const REDIRECT_URI = "http://localhost:3000"
