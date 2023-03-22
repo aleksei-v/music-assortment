@@ -10,7 +10,7 @@ const Dropdown = ({options, changed, selectedValue, label}) => {
     }
 
   return (
-      <div className='col-sm-4 row form-group px-0'>
+      <div className='col-sm-4 form-group px-0'>
           <label className='form-label col-sm-3'>{label}</label>
           <select value={selectedValue} onChange={dropdownChanged} className="form-control form-control-sm col-sm-10">
                <option key={0}>Select...</option>

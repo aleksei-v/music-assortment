@@ -1,6 +1,7 @@
 import React from 'react'
+import { FaSpotify  } from "react-icons/fa";
+const SongDetail = ({ album, artists, name, external_urls}) => {
 
-const SongDetail = ({album, artists, name}) => {
     return (
         <div className="col-sm-6 text-center">
             <div className='row col-sm-4 px-0 mx-auto'>
@@ -11,7 +12,7 @@ const SongDetail = ({album, artists, name}) => {
             </div>
             <div className='row col-sm-12 px-0'>
                 <label htmlFor={name} className="form-label col-sm-12">
-                    {name}
+                    {name} <a href={external_urls.spotify} target="_blank" rel="noreferrer"><FaSpotify /></a>
                 </label>
             </div>
             <div className='row col-sm-12 px-0'>

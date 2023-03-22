@@ -4,7 +4,6 @@ const ListBox = ({ items, clicked }) => {
     const onClick = e => {
         e.preventDefault();
         clicked(e.target.id)
-        console.log(e.target.id)
     }
   return (
       <div className="col-sm-6 px-0">
