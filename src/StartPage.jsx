@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap'
 
 const StartPage = () => {
     const CLIENT_ID = 'dc433a935d2e4e958ad9d3f3caf9aca0'
-    const REDIRECT_URI = "https://aleksei-v.github.io/music-assortment/"
+    const REDIRECT_URI = "https://aleksei-v.github.io"
     // const REDIRECT_URI = "http://localhost:3000"
     const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
     const RESPONSE_TYPE = "token"
